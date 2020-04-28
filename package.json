@@ -1,0 +1,18 @@
+{
+  "name": "ooo-bot",
+  "version": "1.0.0",
+  "description": "This will auto respond for me while I'm out of office. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "John Celoria jceloria@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@ringcentral/sdk": "^4.1.0",
+    "@ringcentral/subscriptions": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "moment": "^2.24.0",
+    "node-localstorage": "^2.1.6"
+  }
+}

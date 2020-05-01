@@ -231,7 +231,7 @@ async function newOoo(extensionId, message) {
 
     console.log(errorMessage)
 
-    if (moment(oooInfo).isBefore(moment())) {
+    if (moment(oooInfo.endDate).isBefore(moment())) {
         errorMessage.push("End date must be after today's date")
     }
 

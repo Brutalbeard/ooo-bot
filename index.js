@@ -56,20 +56,6 @@ async function main() {
 
     console.log("Owner id: ", userExtensionId)
 
-    // Clean out old subs. Nice to have when developing.
-    await rcsdk
-        .platform()
-        .get('/restapi/v1.0/subscription')
-        .then(res => {
-            return res.json()
-        })
-        .then(res => {
-            cleanSubs(res.records)
-        })
-        .catch(e => {
-            console.error(e.message)
-        })
-
     let subscription = subscriptions.createSubscription();
 
     subscription.on(subscription.events.notification, async msg => {
@@ -85,7 +71,7 @@ async function main() {
                 })
         }
 
-        if (msg.body.creatorId == userExtensionId && msg.body.text.includes("ping")) {
+        if (msg.body.creatorId == userExtensionId && msg.body.test && msg.body.text.includes("ping")) {
             rcsdk
                 .platform()
                 .post(`/restapi/v1.0/glip/posts`, {
@@ -106,6 +92,14 @@ async function main() {
             console.error("Issue setting subscription filters: ", e.message)
         })
 
+    setTimeout(() => {
+            subscription
+                .renew()
+                .catch(e => {
+                    console.error("Issue renewing subscription")
+                })
+        }, 59 * 1000) // every 59 miunutes
+
 }
 
 async function wasIMentioned(msg) {
@@ -124,15 +118,15 @@ async function wasIMentioned(msg) {
 
 }
 
-async function cleanSubs(subsList) {
+// async function cleanSubs(subsList) {
 
-    subsList.forEach(sub => {
-        rcsdk
-            .platform()
-            .delete(`/restapi/v1.0/subscription/${sub.id}`)
-            .catch(e => {
-                console.error("Issue deleing sub: ", e.message)
-            })
-    })
+//     subsList.forEach(sub => {
+//         rcsdk
+//             .platform()
+//             .delete(`/restapi/v1.0/subscription/${sub.id}`)
+//             .catch(e => {
+//                 console.error("Issue deleing sub: ", e.message)
+//             })
+//     })
 
-}
+// }

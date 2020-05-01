@@ -257,7 +257,7 @@ async function autoResponse(extensionId, messageRecipient, ooInfo) {
 
     let oooInfo = await getUserData(extensionId).catch(() => { return undefined })
 
-    let respoonseMessage = `Automated Response: ${oooInfo.message}`
+    let respoonseMessage = oooInfo ? `Automated Response: ${oooInfo.message}` : "No current OOO settings"
 
     rcsdk
         .platform()

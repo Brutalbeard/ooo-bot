@@ -167,13 +167,18 @@ async function pong(extensionId) {
  */
 async function info(extensionId) {
 
-    let oooInfo = await getUserData(extensionId.toString())
+    let oooInfo = await getUserData(extensionId.toString()).catch(() => { return undefined })
 
     let responseText = []
 
-    Object.keys(oooInfo).forEach(key => {
-        responseText.push(`${key}: ${oooInfo[key]}`)
-    })
+    if (oooInfo) {
+        Object.keys(oooInfo).forEach(key => {
+            responseText.push(`${key}: ${oooInfo[key]}`)
+        })
+    } else {
+        responseText.push("No current OOO settings")
+    }
+
 
     rcsdk
         .platform()
@@ -250,7 +255,7 @@ async function newOoo(extensionId, message) {
 
 async function autoResponse(extensionId, messageRecipient, ooInfo) {
 
-    let oooInfo = await getUserData(extensionId)
+    let oooInfo = await getUserData(extensionId).catch(() => { return undefined })
 
     let respoonseMessage = `Automated Response: ${oooInfo.message}`
 

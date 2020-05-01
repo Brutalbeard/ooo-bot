@@ -5,8 +5,3 @@ RINGCENTRAL_CLIENT_SECRET=
 RINGCENTRAL_USERNAME=
 RINGCENTRAL_EXTENSION=
 RINGCENTRAL_PASSWORD=
-
-START_DATE=2020-05-05
-END_DATE=2020-05-13
-
-RESPONSE_MESSAGE="I am currently out of office, and will return on May 14th. For immediate assistance, please reach out to somebody else."

@@ -9,7 +9,7 @@ const localstorage = new LocalStorage('./auth')
 const startDate = moment(process.env.START_DATE).startOf('day')
 const endDate = moment(process.env.END_DATE).endOf('day')
 
-const { setUserData, getUserData, openAllConnections } = require('./lib/redis')
+const { setUserData, getUserData, clearUserData, openAllConnections } = require('./lib/redis')
 
 const rcsdk = new SDK({
     server: process.env.RINGCENTRAL_PLATFORM_ADDRESS,
@@ -67,19 +67,19 @@ async function main() {
             return
         }
 
-        if (msg.body.creatorId == userExtensionId && msg.body.text && /^new ooo/.test(msg.body.text)) {
+        if (msg.body.creatorId == userExtensionId && msg.body.text && /^ooo new/.test(msg.body.text)) {
             console.log("New ooo: ", msg.body)
             newOoo(msg.body.creatorId, msg.body.text)
             return
         }
 
-        if (msg.body.creatorId == userExtensionId && msg.body.text && /^get ooo/.test(msg.body.text)) {
+        if (msg.body.creatorId == userExtensionId && msg.body.text && /^ooo info/.test(msg.body.text)) {
             console.log("Info on ooo: ", msg.body)
             info(msg.body.creatorId)
             return
         }
 
-        if (msg.body.creatorId == userExtensionId && msg.body.text && /^test ooo/.test(msg.body.text)) {
+        if (msg.body.creatorId == userExtensionId && msg.body.text && /^ooo test/.test(msg.body.text)) {
             console.log("Info on ooo: ", msg.body)
 
             let oooInfo = await getUserData(userExtensionId).catch(e => {
@@ -88,6 +88,40 @@ async function main() {
             })
 
             autoResponse(userExtensionId, msg.body.creatorId, oooInfo)
+            return
+        }
+
+        if (msg.body.creatorId == userExtensionId && msg.body.text && /^ooo clear/.test(msg.body.text)) {
+            console.log("Clearing ooo requested: ", msg.body)
+
+            await clearUserData(userExtensionId)
+                .then(() => {
+                    rcsdk
+                        .platform()
+                        .post(`/restapi/v1.0/glip/posts`, {
+                            text: "Out of office settings has been cleared",
+                            personIds: [userExtensionId]
+                        })
+                        .catch(e => {
+                            console.error("Issue responding to @mention: ", e.message)
+                        })
+                })
+            return
+        }
+
+        if (msg.body.creatorId == userExtensionId && msg.body.text && /^ooo help/.test(msg.body.text)) {
+            console.log("Clearing ooo requested: ", msg.body)
+
+            rcsdk
+                .platform()
+                .post(`/restapi/v1.0/glip/posts`, {
+                    text: "You can...\nooo new - Sets a new out of office\nooo info - Pulls info on current settings\nooo test - Does a test back to you of your current settings\nooo clear - Dump your current out of office entirely",
+                    personIds: [userExtensionId]
+                })
+                .catch(e => {
+                    console.error("Issue responding to @mention: ", e.message)
+                })
+
             return
         }
 
